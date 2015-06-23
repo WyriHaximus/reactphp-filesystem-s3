@@ -1,0 +1,27 @@
+{
+  "name": "wyrihaximus/react-filesystem-s3",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Cees-Jan Kiewiet",
+      "email": "ceesjank@gmail.com"
+    }
+  ],
+  "require": {
+    "react/filesystem": "dev-master",
+    "guzzlehttp/guzzle": "^6.0",
+    "wyrihaximus/react-guzzle-psr7": "dev-master",
+    "aws/aws-sdk-php": "^3.0",
+    "wyrihaximus/react-guzzle-http-client": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "WyriHaximus\\React\\Filesystem\\S3\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "WyriHaximus\\React\\Tests\\Filesystem\\S3\\": "tests/"
+    }
+  }
+}
