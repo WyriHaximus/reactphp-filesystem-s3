@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.0.5",
+            "version": "3.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "9f8de576b9adf94ab482453722b9e33f2c91d440"
+                "reference": "899ee8b74eedf87d70d2797cb4add7fe22940d51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/9f8de576b9adf94ab482453722b9e33f2c91d440",
-                "reference": "9f8de576b9adf94ab482453722b9e33f2c91d440",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/899ee8b74eedf87d70d2797cb4add7fe22940d51",
+                "reference": "899ee8b74eedf87d70d2797cb4add7fe22940d51",
                 "shasum": ""
             },
             "require": {
@@ -76,7 +76,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2015-06-19 01:12:54"
+            "time": "2015-06-24 23:29:34"
         },
         {
             "name": "evenement/evenement",
@@ -233,23 +233,23 @@
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "01abc3232138f330d8a1eaa808fcbdf9b4292f47"
+                "reference": "2ee5bc7f1a92efecc90da7f6711a53a7be26b5b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/01abc3232138f330d8a1eaa808fcbdf9b4292f47",
-                "reference": "01abc3232138f330d8a1eaa808fcbdf9b4292f47",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/2ee5bc7f1a92efecc90da7f6711a53a7be26b5b7",
+                "reference": "2ee5bc7f1a92efecc90da7f6711a53a7be26b5b7",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.5.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.0"
+                "phpunit/phpunit": "~4.0"
             },
             "type": "library",
             "extra": {
@@ -280,31 +280,31 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2015-05-13 05:05:10"
+            "time": "2015-06-24 16:16:25"
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "19e510056d8d671d9d9e25dc16937b3dd3802ae6"
+                "reference": "af0e1758de355eb113917ad79c3c0e3604bce4bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/19e510056d8d671d9d9e25dc16937b3dd3802ae6",
-                "reference": "19e510056d8d671d9d9e25dc16937b3dd3802ae6",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/af0e1758de355eb113917ad79c3c0e3604bce4bd",
+                "reference": "af0e1758de355eb113917ad79c3c0e3604bce4bd",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0",
-                "psr/http-message": "^1.0"
+                "psr/http-message": "~1.0"
             },
             "provide": {
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.0"
+                "phpunit/phpunit": "~4.0"
             },
             "type": "library",
             "extra": {
@@ -338,7 +338,7 @@
                 "stream",
                 "uri"
             ],
-            "time": "2015-05-19 17:58:45"
+            "time": "2015-06-24 19:55:15"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -574,12 +574,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/filesystem.git",
-                "reference": "43e5b8c9a044be6d13caa32bfdb1340a6716b7c6"
+                "reference": "d1e96587d85918b70f81ff273031b6857d965b64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/filesystem/zipball/43e5b8c9a044be6d13caa32bfdb1340a6716b7c6",
-                "reference": "43e5b8c9a044be6d13caa32bfdb1340a6716b7c6",
+                "url": "https://api.github.com/repos/reactphp/filesystem/zipball/d1e96587d85918b70f81ff273031b6857d965b64",
+                "reference": "d1e96587d85918b70f81ff273031b6857d965b64",
                 "shasum": ""
             },
             "require": {
@@ -605,7 +605,7 @@
                 "asynchronous",
                 "filesystem"
             ],
-            "time": "2015-06-21 17:25:30"
+            "time": "2015-06-25 19:08:18"
         },
         {
             "name": "react/http-client",

@@ -11,6 +11,7 @@ use React\Filesystem\AdapterInterface;
 use React\Filesystem\CallInvokerInterface;
 use React\Filesystem\Node\Directory;
 use React\Filesystem\Node\File;
+use React\Filesystem\Node\Stream;
 use React\Filesystem\PooledInvoker;
 use React\Promise\Deferred;
 use WyriHaximus\React\GuzzlePsr7\HttpClientAdapter;
@@ -154,40 +155,38 @@ class S3Adapter implements AdapterInterface
      */
     public function ls($path, $flags = EIO_READDIR_DIRS_FIRST)
     {
-        return $this->invoker->invokeCall('listObjects', [
+        $stream = new Stream();
+
+        $this->invoker->invokeCall('listObjects', [
             'Bucket' => $this->bucket,
             'Delimiter' => '/',
             'Prefix' => $path,
-        ])->then(function ($ls) {
-            $deferred = new Deferred();
-            $this->loop->futureTick(function () use ($ls, $deferred) {
-                $this->processLsContents($ls->toArray(), $deferred);
-            });
-            return $deferred->promise();
+        ])->then(function ($ls) use ($stream) {
+            $this->processLsContents($ls->toArray(), $stream);
         });
+
+        return $stream;
     }
 
-    protected function processLsContents($array, $deferred)
+    protected function processLsContents($array, $stream)
     {
-        $list = new \SplObjectStorage();
-
         if (isset($array['Contents'])) {
             foreach ($array['Contents'] as $file) {
-                $node = new File($file['Key'], $this);
-                $deferred->progress($node);
-                $list->attach($node);
+                $stream->emit('data', [
+                    new File($file['Key'], $this),
+                ]);
             }
         }
 
         if (isset($array['CommonPrefixes'])) {
             foreach ($array['CommonPrefixes'] as $file) {
-                $node = new Directory($file['Prefix'], $this);
-                $deferred->progress($node);
-                $list->attach($node);
+                $stream->emit('data', [
+                    new Directory($file['Prefix'], $this),
+                ]);
             }
         }
 
-        $deferred->resolve($list);
+        $stream->close();
     }
 
     /**
@@ -218,5 +217,38 @@ class S3Adapter implements AdapterInterface
     public function close($fd)
     {
         // TODO: Implement close() method.
+    }
+
+    /**
+     * @param $fileDescriptor
+     * @param int $length
+     * @param int $offset
+     * @return \React\Promise\PromiseInterface
+     */
+    public function read($fileDescriptor, $length, $offset)
+    {
+        // TODO: Implement read() method.
+    }
+
+    /**
+     * @param $fileDescriptor
+     * @param string $data
+     * @param int $length
+     * @param int $offset
+     * @return \React\Promise\PromiseInterface
+     */
+    public function write($fileDescriptor, $data, $length, $offset)
+    {
+        // TODO: Implement write() method.
+    }
+
+    /**
+     * @param string $fromPath
+     * @param string $toPath
+     * @return \React\Promise\PromiseInterface
+     */
+    public function rename($fromPath, $toPath)
+    {
+        // TODO: Implement rename() method.
     }
 }
