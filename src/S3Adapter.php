@@ -2,6 +2,7 @@
 
 namespace WyriHaximus\React\Filesystem\S3;
 
+use Aws\Result;
 use Aws\S3\S3Client;
 use Aws\Sdk;
 use GuzzleHttp\HandlerStack;
@@ -9,11 +10,13 @@ use React\EventLoop\LoopInterface;
 use React\EventLoop\Timer\Timer;
 use React\Filesystem\AdapterInterface;
 use React\Filesystem\CallInvokerInterface;
-use React\Filesystem\Node\Directory;
-use React\Filesystem\Node\File;
+use React\Filesystem\FilesystemInterface;
+use React\Filesystem\Node\NodeInterface;
 use React\Filesystem\Node\Stream;
+use React\Filesystem\ObjectStream;
 use React\Filesystem\PooledInvoker;
 use React\Promise\Deferred;
+use React\Promise\FulfilledPromise;
 use WyriHaximus\React\GuzzlePsr7\HttpClientAdapter;
 
 class S3Adapter implements AdapterInterface
@@ -30,6 +33,11 @@ class S3Adapter implements AdapterInterface
 
     protected $invoker;
 
+    /**
+     * @var FilesystemInterface
+     */
+    protected $filesystem;
+
     public function __construct(LoopInterface $loop, $options = [], $bucket = '')
     {
         $this->loop = $loop;
@@ -37,6 +45,11 @@ class S3Adapter implements AdapterInterface
         $this->s3Client = (new Sdk($options))->createS3();
         $this->bucket = $bucket;
         $this->invoker = new PooledInvoker($this);
+    }
+
+    public function setFilesystem(FilesystemInterface $filesystem)
+    {
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -65,7 +78,6 @@ class S3Adapter implements AdapterInterface
     public function callFilesystem($function, $args, $errorResultCode = -1)
     {
         $this->startQueue();
-
         $deferred = new Deferred();
         $this->s3Client->{$function . 'Async'}($args)->then(function ($result) use ($deferred) {
             $deferred->resolve($result);
@@ -145,7 +157,11 @@ class S3Adapter implements AdapterInterface
      */
     public function stat($filename)
     {
-        // TODO: Implement stat() method.
+        if (substr($filename, -1) === NodeInterface::DS) {
+            return new FulfilledPromise([]);
+        }
+
+        return new FulfilledPromise([]); // Do actual stat logic later
     }
 
     /**
@@ -155,7 +171,7 @@ class S3Adapter implements AdapterInterface
      */
     public function ls($path, $flags = EIO_READDIR_DIRS_FIRST)
     {
-        $stream = new Stream();
+        $stream = new ObjectStream();
 
         $this->invoker->invokeCall('listObjects', [
             'Bucket' => $this->bucket,
@@ -173,7 +189,7 @@ class S3Adapter implements AdapterInterface
         if (isset($array['Contents'])) {
             foreach ($array['Contents'] as $file) {
                 $stream->emit('data', [
-                    new File($file['Key'], $this),
+                    $this->filesystem->file($file['Key'], $this),
                 ]);
             }
         }
@@ -181,7 +197,7 @@ class S3Adapter implements AdapterInterface
         if (isset($array['CommonPrefixes'])) {
             foreach ($array['CommonPrefixes'] as $file) {
                 $stream->emit('data', [
-                    new Directory($file['Prefix'], $this),
+                    $this->filesystem->dir($file['Prefix']),
                 ]);
             }
         }
@@ -207,7 +223,40 @@ class S3Adapter implements AdapterInterface
      */
     public function open($path, $flags, $mode = self::CREATION_MODE)
     {
-        // TODO: Implement open() method.
+        if (strpos($flags, 'r') !== false) {
+            return $this->openRead($path);
+        }
+
+        if (strpos($flags, 'w') !== false) {
+            return $this->openWrite($path);
+        }
+
+        throw new \InvalidArgumentException('Open must be used with read or write flag');
+    }
+
+    protected function openRead($path)
+    {
+        return $this->invoker->invokeCall('getObject', [
+            'Bucket' => $this->bucket,
+            'Key' => $path,
+        ])->then(function (Result $result) {
+            return \React\Promise\resolve($result['Body']);
+        });
+    }
+
+    protected function openWrite($path)
+    {
+        $sink = new BufferedSink();
+        $sink->promise()->then(function ($body) use ($path) {
+            return $this->invoker->invokeCall('putObject', [
+                'Body' => $body,
+                'Bucket' => $this->bucket,
+                'Key' => $path,
+            ]);
+        })->then(function ($result) {
+            return \React\Promise\resolve($result['Body']);
+        });
+        return \React\Promise\resolve($sink);
     }
 
     /**
