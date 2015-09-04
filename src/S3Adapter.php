@@ -17,6 +17,7 @@ use React\Filesystem\ObjectStream;
 use React\Filesystem\PooledInvoker;
 use React\Promise\Deferred;
 use React\Promise\FulfilledPromise;
+use React\Promise\RejectedPromise;
 use WyriHaximus\React\GuzzlePsr7\HttpClientAdapter;
 
 class S3Adapter implements AdapterInterface
@@ -161,7 +162,21 @@ class S3Adapter implements AdapterInterface
             return new FulfilledPromise([]);
         }
 
-        return new FulfilledPromise([]); // Do actual stat logic later
+        return $this->invoker->invokeCall('headObject', [
+            'Bucket' => $this->bucket,
+            'Key' => $filename,
+        ])->then(function (Result $result) {
+            if ($result->toArray()['@metadata']['statusCode'] !== 200) {
+                return new RejectedPromise();
+            }
+
+            return new FulfilledPromise([
+                'size' => $result->get('ContentLength'),
+                'atime' => $result->get('LastModified')->format('U'),
+                'ctime' => $result->get('LastModified')->format('U'),
+                'mtime' => $result->get('LastModified')->format('U'),
+            ]);
+        });
     }
 
     /**
