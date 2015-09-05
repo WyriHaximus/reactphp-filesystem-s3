@@ -22,7 +22,14 @@ use WyriHaximus\React\GuzzlePsr7\HttpClientAdapter;
 
 class S3Adapter implements AdapterInterface
 {
+    /**
+     * @var LoopInterface
+     */
     protected $loop;
+
+    /**
+     * @var
+     */
     protected $queueTimer;
 
     /**
@@ -30,8 +37,14 @@ class S3Adapter implements AdapterInterface
      */
     protected $s3Client;
 
+    /**
+     * @var string
+     */
     protected $bucket;
 
+    /**
+     * @var PooledInvoker
+     */
     protected $invoker;
 
     /**
@@ -39,6 +52,11 @@ class S3Adapter implements AdapterInterface
      */
     protected $filesystem;
 
+    /**
+     * @param LoopInterface $loop
+     * @param array $options
+     * @param string $bucket
+     */
     public function __construct(LoopInterface $loop, $options = [], $bucket = '')
     {
         $this->loop = $loop;
@@ -48,6 +66,9 @@ class S3Adapter implements AdapterInterface
         $this->invoker = new PooledInvoker($this);
     }
 
+    /**
+     * @param FilesystemInterface $filesystem
+     */
     public function setFilesystem(FilesystemInterface $filesystem)
     {
         $this->filesystem = $filesystem;
