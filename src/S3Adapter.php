@@ -18,6 +18,7 @@ use React\Filesystem\PooledInvoker;
 use React\Promise\Deferred;
 use React\Promise\FulfilledPromise;
 use React\Promise\RejectedPromise;
+use React\Stream\WritableStreamInterface;
 use WyriHaximus\React\GuzzlePsr7\HttpClientAdapter;
 
 class S3Adapter implements AdapterInterface
@@ -248,7 +249,16 @@ class S3Adapter implements AdapterInterface
      */
     public function touch($path, $mode = self::CREATION_MODE)
     {
-        // TODO: Implement touch() method.
+        return $this->openWrite($path)->then(function (WritableStreamInterface $stream) {
+            $deferred = new Deferred();
+
+            $stream->on('close', function () use ($deferred) {
+                $deferred->resolve();
+            });
+            $stream->end('');
+
+            return $deferred->promise();
+        });
     }
 
     /**
@@ -286,6 +296,7 @@ class S3Adapter implements AdapterInterface
         $sink->promise()->then(function ($body) use ($path) {
             return $this->invoker->invokeCall('putObject', [
                 'Body' => $body,
+                'ContentLength' => strlen($body),
                 'Bucket' => $this->bucket,
                 'Key' => $path,
             ]);
