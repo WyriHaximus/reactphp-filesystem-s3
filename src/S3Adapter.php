@@ -150,7 +150,14 @@ class S3Adapter implements AdapterInterface
      */
     public function unlink($filename)
     {
-        // TODO: Implement unlink() method.
+        return $this->invoker->invokeCall('deleteObject', [
+            'Bucket' => $this->bucket,
+            'Key' => $filename,
+        ])->then(function () {
+            return new FulfilledPromise();
+        }, function () {
+            return new RejectedPromise();
+        });
     }
 
     /**
@@ -345,6 +352,16 @@ class S3Adapter implements AdapterInterface
      */
     public function rename($fromPath, $toPath)
     {
-        // TODO: Implement rename() method.
+        return $this->invoker->invokeCall('copyObject', [
+            'Bucket' => $this->bucket,
+            'Key' => $toPath,
+            'CopySource' => $this->bucket . '/' . $fromPath,
+        ])->then(function () use ($fromPath) {
+            return $this->unlink($fromPath);
+        })->then(function () {
+            return new FulfilledPromise();
+        }, function () {
+            return new RejectedPromise();
+        });
     }
 }
