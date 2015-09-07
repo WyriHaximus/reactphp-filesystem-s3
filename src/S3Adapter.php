@@ -132,7 +132,7 @@ class S3Adapter implements AdapterInterface
      */
     public function mkdir($path, $mode = self::CREATION_MODE)
     {
-        // TODO: Implement mkdir() method.
+        return new FulfilledPromise();
     }
 
     /**
