@@ -178,7 +178,7 @@ class S3Adapter implements AdapterInterface
      */
     public function chown($path, $uid, $gid)
     {
-        // TODO: Implement chown() method.
+        return new RejectedPromise(new \Exception('No implemented, not intended for use'));
     }
 
     /**
@@ -319,7 +319,7 @@ class S3Adapter implements AdapterInterface
      */
     public function close($fd)
     {
-        // TODO: Implement close() method.
+        return new RejectedPromise(new \Exception('No implemented, not intended for use'));
     }
 
     /**
@@ -330,7 +330,7 @@ class S3Adapter implements AdapterInterface
      */
     public function read($fileDescriptor, $length, $offset)
     {
-        // TODO: Implement read() method.
+        return new RejectedPromise(new \Exception('No implemented, not intended for use'));
     }
 
     /**
@@ -342,7 +342,7 @@ class S3Adapter implements AdapterInterface
      */
     public function write($fileDescriptor, $data, $length, $offset)
     {
-        // TODO: Implement write() method.
+        return new RejectedPromise(new \Exception('No implemented, not intended for use'));
     }
 
     /**
