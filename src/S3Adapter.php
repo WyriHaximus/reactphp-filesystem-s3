@@ -12,7 +12,6 @@ use React\Filesystem\AdapterInterface;
 use React\Filesystem\CallInvokerInterface;
 use React\Filesystem\FilesystemInterface;
 use React\Filesystem\Node\NodeInterface;
-use React\Filesystem\Node\Stream;
 use React\Filesystem\ObjectStream;
 use React\Filesystem\PooledInvoker;
 use React\Promise\Deferred;
