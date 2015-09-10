@@ -60,7 +60,9 @@ class S3Adapter implements AdapterInterface
     public function __construct(LoopInterface $loop, $options = [], $bucket = '')
     {
         $this->loop = $loop;
-        $options['http_handler'] = HandlerStack::create(new HttpClientAdapter($loop));
+        if (!isset($options['http_handler']) || !($options['http_handler'] instanceof HandlerStack)) {
+            $options['http_handler'] = HandlerStack::create(new HttpClientAdapter($loop));
+        }
         $this->s3Client = (new Sdk($options))->createS3();
         $this->bucket = $bucket;
         $this->invoker = new PooledInvoker($this);
