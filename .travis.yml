@@ -1,4 +1,11 @@
 language: php
+sudo: false
+
+## Cache composer bits
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
 
 ## PHP versions we test against
 php:
@@ -43,13 +50,5 @@ before_script:
 ## Run the actual test
 script: make travis
 
-after_script:
-  - make coveralls
-
-notifications:
-  webhooks:
-    urls: 
-      - http://wyrihaximus.net/wyri_projects/wyri_projects/webhook/travisci.json
-    on_success: always
-    on_failure: always
-    on_start: true
+## Send coverage report to scrutinizer
+after_script: make travis-coverage
