@@ -35,6 +35,25 @@ $adapter = new S3Adapter(
 );
 ```
 
+Next all you have to do is create a new `Filesystem` instance with the new adapter:
+
+```php
+$filesystem = Filesystem::createFromAdapter($adapter);
+```
+
+This filesystem can then be used to, for example, list the contents in the root of your S3 bucket:
+
+```php
+$filesystem->dir('')->ls()->then(function (\SplObjectStorage $ls) {
+    foreach ($ls as $node) {
+        echo $node->getPath(), PHP_EOL;
+    }
+    echo 'Found ', $ls->count(), ' nodes', PHP_EOL;
+}, function ($e) {
+    echo $e->getMessage(), PHP_EOL;
+});
+```
+
 See the [examples](https://github.com/WyriHaximus/reactphp-filesystem-s3/tree/master/examples) directory for complete examples.
 
 ## Contributing ##
