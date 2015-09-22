@@ -41,6 +41,8 @@ matrix:
 
 ## Update composer and run the appropriate composer command
 before_script:
+  - yes "" | pecl install eio
+  - echo "extension=\"eio.so\"" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - composer self-update -q
   - if [ -z "$dependencies" ]; then composer install; fi;
   - if [ "$dependencies" = "lowest" ]; then composer update --prefer-lowest -n; fi;
